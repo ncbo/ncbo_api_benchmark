@@ -1,4 +1,6 @@
 
 .DS_Store
 
-data/snomed.zip
+data/SNOMEDCT_1353_OWL.zip
+
+data/repo/
