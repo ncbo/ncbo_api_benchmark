@@ -56,20 +56,31 @@ def create_dataset(conf):
             time.sleep(5)
         print "parsed."
 
-def term_calls(configuration):
-    api = rest.Rest(conf["rest"]["ontologies"])
+def dfs_traversal(api,acronym, cls_id, leaves):
+    children = api.get_children(acronym,cls_id)
+    if len(children) == 0:
+        leaves.append((acronym, cls_id))
+    for kid in children:
+        dfs_traversal(api, acronym, kid["resource_id"], leaves)
 
-    log_root_calls = open("./logs/log_root_calls.csv","w")
+def benchmark_traverse_from_roots(configuration):
+    api = rest.Rest(configuration["rest"]["ontologies"])
+    api.key="some_bogus_api_key"
+    api.start_recording("./logs/benchmark_traverse_from_roots.csv")
+
+    leaves = []
     ontologies = api.get_all_ontologies()
     for ontology in ontologies:
-        log_root_calls.write("on
+        classes = api.get_roots(ontology["acronym"])
+        for cls in classes:
+            dfs_traversal(api,ontology["acronym"], cls["resource_id"], leaves)
+    pdb.set_trace()
 
-        classes = api.get_roots(ontology)
 
 if __name__ == "__main__":
     command = sys.argv[1]
     configuration = utils.get_configuration(sys.argv[2])
-    if command == "parse"
+    if command == "load_data":
         create_dataset(configuration)
-    if command == "logs"
-        create_logs(configuration)
+    if command == "gen_logs":
+        benchmark_traverse_from_roots(configuration)
