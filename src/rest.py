@@ -120,3 +120,7 @@ class Rest:
         route = "/ontologies/%s/classes/%s/children"%(acr,urllib.quote(cls_id,''))
         return json.loads(self.get(route,data))
 
+    def get_classes(self, acr, page=1,size=200):
+        data = { "apikey" : self.key , "page" : page , "size" : size }
+        route = "/ontologies/%s/classes"%(acr)
+        return json.loads(self.get(route,data))
