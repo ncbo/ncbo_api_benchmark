@@ -1,6 +1,9 @@
 
 .DS_Store
 
-data/SNOMEDCT_1353_OWL.zip
+data/ontologies/repo/
+data/ontologies/SNOMEDCT_1353_OWL.zip
 
-data/repo/
+*.swp
+
+*.pyc
