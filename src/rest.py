@@ -13,6 +13,10 @@ class Rest:
         self.user_id = None
         self.record_on_file = None
 
+    def use_proxy(self,host,port):
+        self.proxy_host = host
+        self.proxy_port = port
+
     def request(self, route, doc, method="GET", files=None):
 
         if self.key:
@@ -26,16 +30,25 @@ class Rest:
                return data
             raise Exception("HTTP error status %s call %s response %s"%(errcode,route,data))
         else:
-            conn = httplib.HTTPConnection(self.host)
+            conn = None
+            if not self.proxy_host:
+                conn = httplib.HTTPConnection(self.host)
+            else:
+                conn = httplib.HTTPConnection(self.proxy_host,self.proxy_port)
+
             params = urllib.urlencode(doc)
             headers = {}
             if method == "PUT" or method == "POST":
                 headers = {"Content-type": "application/x-www-form-urlencoded", "Accept": "application/json"}
+                if self.proxy_host:
+                    route = "http://" + self.host + route
                 conn.request(method, route, params, headers)
             else:
                 call =  route + "?" + params
                 if self.record_on_file:
                     self.record_on_file.write("GET %s"%(call))
+                if self.proxy_host:
+                    call = "http://" + self.host + call
                 conn.request(method, call, "", headers)
             response = conn.getresponse()
             status, reason = response.status, response.reason

@@ -66,6 +66,7 @@ def dfs_traversal(api,acronym, cls_id, leaves):
 def benchmark_traverse_from_roots(configuration):
     api = rest.Rest(configuration["rest"]["ontologies"])
     api.key="some_bogus_api_key"
+    api.use_proxy("localhost","8080")
     api.start_recording("./logs/benchmark_traverse_from_roots.csv")
 
     leaves = []
