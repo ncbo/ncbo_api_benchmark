@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+if [ -z "$1" ]
+then
+    echo "usage ./benchmark < create | run | delete > "
+    exit 1;
+fi
+case "$1" in
+"create" ) echo "creating benchmark suite ..."
+`python ./src/create.py bench.conf`
+;;
+"run" ) echo "run"
+;;
+esac
