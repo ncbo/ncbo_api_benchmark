@@ -12,6 +12,8 @@ class Rest:
         self.key = None
         self.user_id = None
         self.record_on_file = None
+        self.proxy_host = None
+        self.proxy_port = None
 
     def use_proxy(self,host,port):
         self.proxy_host = host
