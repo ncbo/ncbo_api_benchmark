@@ -11,6 +11,7 @@ class Rest:
         self.host = host
         self.key = None
         self.user_id = None
+        self.record_on_file = None
 
     def request(self, route, doc, method="GET", files=None):
 
@@ -32,7 +33,10 @@ class Rest:
                 headers = {"Content-type": "application/x-www-form-urlencoded", "Accept": "application/json"}
                 conn.request(method, route, params, headers)
             else:
-                conn.request(method, route + "?" + params, "", headers)
+                call =  route + "?" + params
+                if self.record_on_file:
+                    self.record_on_file.write("GET %s"%(call))
+                conn.request(method, call, "", headers)
             response = conn.getresponse()
             status, reason = response.status, response.reason
             data = response.read()
@@ -48,6 +52,18 @@ class Rest:
 
     def get(self,route, params):
         return self.request(route, params, "GET")
+
+    def start_recording(self,on_file):
+        self.record_on_file = open(on_file, "w")
+
+    def stop_recording(self):
+        self.record_on_file.close()
+        self.record_on_file = None
+
+    def get_all_ontologies(self):
+        route = "/ontologies"
+        data = { "apikey" : self.key }
+        return json.loads(self.get(route,data))
 
     def create_user(self,name,email,password):
         doc = { "email" : email, "password" : password }
@@ -81,4 +97,13 @@ class Rest:
         ontology = json.loads(self.get(route,data))
         return ontology
 
+    def get_roots(self, acr):
+        data = { "apikey" : self.key }
+        route = "/ontologies/%s/classes/roots"%(acr)
+        return json.loads(self.get(route,data))
+
+    def get_children(self, acr, cls_id):
+        data = { "apikey" : self.key }
+        route = "/ontologies/%s/classes/%s/children"%(acr,urllib.quote(cls_id,''))
+        return json.loads(self.get(route,data))
 
