@@ -60,6 +60,8 @@ def dfs_traversal(api,acronym, cls_id, leaves):
     children = api.get_children(acronym,cls_id)
     if len(children) == 0:
         leaves.append((acronym, cls_id))
+    if len(leaves) > 500:
+        return
     for kid in children:
         dfs_traversal(api, acronym, kid["resource_id"], leaves)
 
@@ -75,7 +77,6 @@ def benchmark_traverse_from_roots(configuration):
         classes = api.get_roots(ontology["acronym"])
         for cls in classes:
             dfs_traversal(api,ontology["acronym"], cls["resource_id"], leaves)
-    pdb.set_trace()
 
 
 if __name__ == "__main__":
