@@ -48,7 +48,7 @@ class Rest:
             else:
                 call =  route + "?" + params
                 if self.record_on_file:
-                    self.record_on_file.write("GET %s"%(call))
+                    self.record_on_file.write("GET %s\n"%(call))
                 if self.proxy_host:
                     call = "http://" + self.host + call
                 conn.request(method, call, "", headers)

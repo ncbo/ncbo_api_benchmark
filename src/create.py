@@ -78,6 +78,24 @@ def benchmark_traverse_from_roots(configuration):
         for cls in classes:
             dfs_traversal(api,ontology["acronym"], cls["resource_id"], leaves)
 
+def benchmark_get_all_classes(configuration):
+    api = rest.Rest(configuration["rest"]["ontologies"])
+    api.key="some_bogus_api_key"
+    api.use_proxy("localhost","8080")
+    api.start_recording("./logs/benchmark_get_all_classes.csv")
+
+    leaves = []
+    ontologies = api.get_all_ontologies()
+    for ontology in ontologies:
+        page = 1
+        total = 0
+        while page:
+            classes = api.get_classes(ontology["acronym"],page=page)
+            total += len(classes["classes"])
+            page = classes["next"] if "next" in classes else None
+            print "get_classes %s/%s"%(total,classes["count"])
+            pdb.set_trace()
+        pdb.set_trace()
 
 if __name__ == "__main__":
     command = sys.argv[1]
@@ -85,4 +103,5 @@ if __name__ == "__main__":
     if command == "load_data":
         create_dataset(configuration)
     if command == "gen_logs":
-        benchmark_traverse_from_roots(configuration)
+        #benchmark_traverse_from_roots(configuration)
+        benchmark_get_all_classes(configuration)
