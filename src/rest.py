@@ -126,3 +126,18 @@ class Rest:
         data = { "apikey" : self.key , "page" : page , "size" : size }
         route = "/ontologies/%s/classes"%(acr)
         return json.loads(self.get(route,data))
+
+    def get_tree(self, acr, cls_id):
+        data = { "apikey" : self.key }
+        route = "/ontologies/%s/classes/%s/tree"%(acr,urllib.quote(cls_id,''))
+        return json.loads(self.get(route,data))
+
+    def get_descendants(self, acr, cls_id):
+        data = { "apikey" : self.key }
+        route = "/ontologies/%s/classes/%s/descendants"%(acr,urllib.quote(cls_id,''))
+        return json.loads(self.get(route,data))
+
+    def get_ancestors(self, acr, cls_id):
+        data = { "apikey" : self.key }
+        route = "/ontologies/%s/classes/%s/ancestors"%(acr,urllib.quote(cls_id,''))
+        return json.loads(self.get(route,data))
