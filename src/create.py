@@ -67,7 +67,7 @@ def benchmark_traverse_from_roots(configuration):
 
     api = rest.Rest(configuration["rest"]["ontologies"])
     api.key="some_bogus_api_key"
-    api.use_proxy("localhost","8080")
+    #api.use_proxy("localhost","8080")
     api.start_recording("./logs/benchmark_traverse_from_roots.csv")
 
     leafs = []
@@ -91,7 +91,7 @@ def benchmark_traverse_from_roots(configuration):
 def benchmark_get_all_classes(configuration):
     api = rest.Rest(configuration["rest"]["ontologies"])
     api.key="some_bogus_api_key"
-    api.use_proxy("localhost","8080")
+    #api.use_proxy("localhost","8080")
     api.start_recording("./logs/benchmark_get_all_classes.csv")
 
     leafs = []
