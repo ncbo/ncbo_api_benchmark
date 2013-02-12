@@ -49,6 +49,7 @@ class Rest:
                 call =  route + "?" + params
                 if self.record_on_file:
                     self.record_on_file.write("GET %s\n"%(call))
+                    self.record_on_file.flush()
                 if self.proxy_host:
                     call = "http://" + self.host + call
                 conn.request(method, call, "", headers)
@@ -120,7 +121,7 @@ class Rest:
     def get_children(self, acr, cls_id):
         data = { "apikey" : self.key }
         route = "/ontologies/%s/classes/%s/children"%(acr,urllib.quote(cls_id,''))
-        return json.loads(self.get(route,data))
+        return json.loads(self.get(route,data))["classes"]
 
     def get_classes(self, acr, page=1,size=500):
         data = { "apikey" : self.key , "page" : page , "size" : size }
