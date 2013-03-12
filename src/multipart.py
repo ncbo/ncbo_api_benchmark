@@ -4,7 +4,7 @@ from cStringIO import StringIO
 import pdb
 import mimetools
 
-def request(host, selector, fields, files,method="PUT"):
+def request(host, selector, fields, files,method="POST"):
     """
     Post fields and files to an http host as multipart/form-data.
     fields is a sequence of (name, value) elements for regular form fields.
