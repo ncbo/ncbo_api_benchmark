@@ -95,9 +95,9 @@ class Rest:
         ontology["name"] = "ontology name in %s"%ontology["acronym"]
         route = "/ontologies/%s"%ontology["acronym"]
         try:
-            response = json.loads(self.put(route,ontology,files=files))
             response = json.loads(self.put(route,ontology))
         except urllib2.HTTPError, e:
+            raise e
 
         files = [("ontology_data_0", data_file)]
         route_submission = "/ontologies/%s/submissions"%ontology["acronym"]
