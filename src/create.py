@@ -38,16 +38,16 @@ def create_dataset(conf):
             continue
         submission = api.create_ontology_submission(ontology)
         submissions.append(submission)
-        print "created ", submission["id"]
+        print "created ", submission["@id"]
 
     for submission in submissions:
-        print "parsing ", submission["id"]
-        acr, sid = (submission["ontology"], submission["submissionId"])
+        print "parsing ", submission["@id"]
+        acr, sid = (submission["ontology"]["acronym"], submission["submissionId"])
         api.parse_submission(acr, sid)
         while True:
-            ontology = api.get_ontology(acr, sid)
-            if ontology["submissionStatus"] != "UPLOADED":
-                print "# STATUS =",ontology["submissionStatus"]
+            submission_status = api.get_ontology_submission(acr, sid,include="submissionStatus")
+            if submission_status["submissionStatus"] != "UPLOADED":
+                print "# STATUS =",submission_status["submissionStatus"]
                 break
             sys.stdout.write("#")
             sys.stdout.flush()
