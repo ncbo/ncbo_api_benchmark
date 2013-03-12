@@ -100,6 +100,7 @@ class Rest:
         except urllib2.HTTPError, e:
 
         files = [("ontology_data_0", data_file)]
+        route_submission = "/ontologies/%s/submissions"%ontology["acronym"]
         try:
             response = json.loads(self.post(route_submission,ontology,files=files))
         except urllib2.HTTPError, e:
