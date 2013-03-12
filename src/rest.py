@@ -90,16 +90,21 @@ class Rest:
     def create_ontology_submission(self,ontology):
         data_body = None
         data_file = open(ontology["local_path"],"r")
-        files = [("ontology_data_0", data_file)]
         ontology["administeredBy"] = self.user_id
         ontology["apikey"] = self.key
         ontology["name"] = "ontology name in %s"%ontology["acronym"]
         route = "/ontologies/%s"%ontology["acronym"]
         try:
             response = json.loads(self.put(route,ontology,files=files))
-            return response
+            response = json.loads(self.put(route,ontology))
+        except urllib2.HTTPError, e:
+
+        files = [("ontology_data_0", data_file)]
+        try:
+            response = json.loads(self.post(route_submission,ontology,files=files))
         except urllib2.HTTPError, e:
             raise e
+        return response
 
     def parse_submission(self, acr, submission_id):
         data = { "apikey" : self.key , "ontology_submission_id" : submission_id}
