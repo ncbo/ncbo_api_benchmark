@@ -118,6 +118,14 @@ class Rest:
         ontology = json.loads(self.get(route,data))
         return ontology
 
+    def get_ontology_submission(self, acr, submission_id,include=None):
+        data = { "apikey" : self.key , "ontology_submission_id" : submission_id}
+        if include:
+            data["include"]=include
+        route = "/ontologies/%s/submissions/%s"%(acr,submission_id)
+        data_back = json.loads(self.get(route,data))
+        return data_back
+
     def get_roots(self, acr):
         data = { "apikey" : self.key }
         route = "/ontologies/%s/classes/roots"%(acr)
