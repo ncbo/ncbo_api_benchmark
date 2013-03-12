@@ -34,7 +34,7 @@ def create_dataset(conf):
 
     submissions = []
     for ontology in conf["ontologies"]:
-        if (ontology["acronym"] == "SNOMEDCT" or ontology["acronym"] == "NCBITAXON"):
+        if (ontology["acronym"] == "SNOMEDCT" or ontology["acronym"] == "NCBITAXON" or ontology["acronym"] == "BIOMODELS"):
             continue
         submission = api.create_ontology_submission(ontology)
         submissions.append(submission)
