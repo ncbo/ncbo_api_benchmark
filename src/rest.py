@@ -108,7 +108,7 @@ class Rest:
 
     def parse_submission(self, acr, submission_id):
         data = { "apikey" : self.key , "ontology_submission_id" : submission_id}
-        route = "/ontologies/%s/submissions/parse"%acr
+        route = "/ontologies/%s/submissions/%s/parse"%(acr,submission_id)
         response = self.post(route, data)
         return json.loads(response)
 
