@@ -106,6 +106,17 @@ def benchmark_get_all_classes(configuration):
             print "get_classes %s/%s"%(total,classes["count"])
     api.stop_recording()
 
+def benchmark_users(configuration)
+    api = rest.Rest(configuration["rest"]["ontologies"])
+    api.key="some_bogus_api_key"
+    #api.use_proxy("localhost","8080")
+    api.start_recording("./logs/benchmark_get_all_users.csv")
+
+    users = api.get_all_users()
+    for user in users:
+        api.get_user(user["user_id"])
+    api.stop_recording()
+
 if __name__ == "__main__":
     command = sys.argv[1]
     configuration = utils.get_configuration(sys.argv[2])
