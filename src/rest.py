@@ -81,6 +81,11 @@ class Rest:
         data = { "apikey" : self.key }
         return json.loads(self.get(route,data))
 
+    def get_user(self,user_id):
+        route = "/user/%s"%user_id
+        data = { "apikey" : self.key }
+        return json.loads(self.get(route,data))
+
     def get_all_ontologies(self):
         route = "/ontologies"
         data = { "apikey" : self.key }
