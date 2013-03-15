@@ -76,6 +76,11 @@ class Rest:
         self.record_on_file.close()
         self.record_on_file = None
 
+    def get_all_users(self):
+        route = "/users"
+        data = { "apikey" : self.key }
+        return json.loads(self.get(route,data))
+
     def get_all_ontologies(self):
         route = "/ontologies"
         data = { "apikey" : self.key }
