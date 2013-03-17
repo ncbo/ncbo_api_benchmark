@@ -77,9 +77,9 @@ def benchmark_traverse_from_roots(configuration):
         for cls in classes:
             dfs_traversal(api,ontology["acronym"], cls["resource_id"], leafs)
 
-        #for all roots get descendents (first page) this queries need to be improved
-        #for cls in classes:
-        #    api.get_descendants(ontology["acronym"], cls["resource_id"])
+    #for all roots get descendents (first page) this queries need to be improved
+    for cls in classes:
+        api.get_descendants(ontology["acronym"], cls["resource_id"])
 
     #for some leafs get path to root and ancestors
     for (ont_acronym,leaf_cls_id) in leafs:
