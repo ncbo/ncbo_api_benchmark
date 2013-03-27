@@ -119,7 +119,6 @@ def benchmark_users(configuration)
     api.stop_recording()
 
 if __name__ == "__main__":
-    #PARSING BIOMODELS ADD USER PROPERTIES
     command = sys.argv[1]
     configuration = utils.get_configuration(sys.argv[2])
     if command == "load_data":
