@@ -122,6 +122,10 @@ if __name__ == "__main__":
     command = sys.argv[1]
     configuration = utils.get_configuration(sys.argv[2])
     if command == "load_data":
+        if sys.argv[2] == "remote.conf":
+            raise Exception("Cannot load data with remote.conf")
+        #working on benchmarking stage make sure I do not write
+        pdb.set_trace()
         create_dataset(configuration)
     if command == "gen_logs":
         benchmark_traverse_from_roots(configuration)
