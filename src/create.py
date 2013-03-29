@@ -72,6 +72,7 @@ def benchmark_traverse_from_roots(configuration):
 
     leafs = []
     ontologies = api.get_all_ontologies()
+    ontologies = filter(lambda x: x['acronym'] in configuration['ontologies'],ontologies)
     for ontology in ontologies:
         classes = api.get_roots(ontology["acronym"])
         for cls in classes:
@@ -96,6 +97,7 @@ def benchmark_get_all_classes(configuration):
 
     leafs = []
     ontologies = api.get_all_ontologies()
+    ontologies = filter(lambda x: x['acronym'] in configuration['ontologies'],ontologies)
     for ontology in ontologies:
         page = 1
         total = 0
