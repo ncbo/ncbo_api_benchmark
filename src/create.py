@@ -107,7 +107,6 @@ def benchmark_get_all_classes(configuration):
             page = page_classes["next_page"] if "next_page" in page_classes else None
     api.stop_recording()
 
-def benchmark_users(configuration)
 def benchmark_users(configuration):
     api = rest.Rest(configuration["rest"]["ontologies"])
     api.key=APIKEY
@@ -116,7 +115,9 @@ def benchmark_users(configuration):
 
     users = api.get_all_users()
     for user in users:
-        api.get_user(user["user_id"])
+        if len(user["username"]) < 5:
+            continue
+        api.get_user(user["username"])
     api.stop_recording()
 
 if __name__ == "__main__":
