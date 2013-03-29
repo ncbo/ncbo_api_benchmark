@@ -7,3 +7,5 @@ data/ontologies/SNOMEDCT_1353_OWL.zip
 *.swp
 
 *.pyc
+
+*.csv
