@@ -82,7 +82,7 @@ class Rest:
         return json.loads(self.get(route,data))
 
     def get_user(self,user_id):
-        route = "/user/%s"%user_id
+        route = "/users/%s"%urllib.quote(user_id)
         data = { "apikey" : self.key }
         return json.loads(self.get(route,data))
 
