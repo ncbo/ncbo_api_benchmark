@@ -123,8 +123,12 @@ class Rest:
         response = self.post(route, data)
         return json.loads(response)
 
-    def get_ontology(self, acr, submission_id):
-        data = { "apikey" : self.key , "ontology_submission_id" : submission_id}
+    def get_ontology(self, acr, submission_id=None,include=None):
+        data = { "apikey" : self.key }
+        if submission_id:
+            data["ontology_submission_id"] = submission_id
+        if include:
+            data["include"] = include
         route = "/ontologies/%s"%acr
         ontology = json.loads(self.get(route,data))
         return ontology
