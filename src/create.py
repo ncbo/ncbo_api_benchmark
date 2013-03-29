@@ -66,7 +66,7 @@ def dfs_traversal(api,acronym, cls_id, leafs):
 def benchmark_traverse_from_roots(configuration):
 
     api = rest.Rest(configuration["rest"]["ontologies"])
-    api.key="some_bogus_api_key"
+    api.key=APIKEY
     #api.use_proxy("localhost","8080")
     api.start_recording("./logs/benchmark_traverse_from_roots.csv")
 
@@ -90,7 +90,7 @@ def benchmark_traverse_from_roots(configuration):
 
 def benchmark_get_all_classes(configuration):
     api = rest.Rest(configuration["rest"]["ontologies"])
-    api.key="some_bogus_api_key"
+    api.key=APIKEY
     #api.use_proxy("localhost","8080")
     api.start_recording("./logs/benchmark_get_all_classes.csv")
 
@@ -110,7 +110,7 @@ def benchmark_get_all_classes(configuration):
 def benchmark_users(configuration)
 def benchmark_users(configuration):
     api = rest.Rest(configuration["rest"]["ontologies"])
-    api.key="some_bogus_api_key"
+    api.key=APIKEY
     #api.use_proxy("localhost","8080")
     api.start_recording("./logs/benchmark_get_all_users.csv")
 
