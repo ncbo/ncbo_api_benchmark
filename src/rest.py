@@ -148,7 +148,7 @@ class Rest:
         return json.loads(self.get(route,data))["classes"]
 
     def get_classes(self, acr, page=1,size=500):
-        data = { "apikey" : self.key , "page" : page , "size" : size }
+        data = { "apikey" : self.key , "page" : page , "pagesize" : size }
         route = "/ontologies/%s/classes"%(acr)
         return json.loads(self.get(route,data))
 
