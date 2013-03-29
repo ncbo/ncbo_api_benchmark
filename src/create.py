@@ -105,8 +105,8 @@ def benchmark_get_all_classes(configuration):
             page_classes = api.get_classes(ontology["acronym"],page=page)
             total += len(page_classes["class"])
             print "get_classes %s paging %s/%s"%(total,page_classes["page"],
-                                                 page_classes["page_count"])
-            page = page_classes["next_page"] if "next_page" in page_classes else None
+                                                 page_classes["pageCount"])
+            page = page_classes["nextPage"] if "nextPage" in page_classes else None
     api.stop_recording()
 
 def benchmark_users(configuration):
