@@ -108,6 +108,7 @@ def benchmark_get_all_classes(configuration):
     api.stop_recording()
 
 def benchmark_users(configuration)
+def benchmark_users(configuration):
     api = rest.Rest(configuration["rest"]["ontologies"])
     api.key="some_bogus_api_key"
     #api.use_proxy("localhost","8080")
@@ -128,5 +129,6 @@ if __name__ == "__main__":
         pdb.set_trace()
         create_dataset(configuration)
     if command == "gen_logs":
+        benchmark_users(configuration)
         benchmark_traverse_from_roots(configuration)
         benchmark_get_all_classes(configuration)
