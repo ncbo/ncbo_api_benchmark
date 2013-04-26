@@ -5,6 +5,8 @@ import utils
 import pdb
 import rest
 
+APIKEY = "73f776e6-e21b-4bce-8420-24f9a3670dbb"
+
 def check_empty(conf,ask=True):
     for epr in conf["sparql"]:
         epr_sparql = sparql.SPARQL(conf["sparql"][epr])
@@ -86,7 +88,6 @@ def benchmark_traverse_from_roots(configuration):
     for (ont_acronym,leaf_cls_id) in leafs:
         api.get_tree(ont_acronym, leaf_cls_id)
         api.get_ancestors(ont_acronym, leaf_cls_id)
-
     api.stop_recording()
 
 def benchmark_get_all_classes(configuration):
@@ -132,6 +133,6 @@ if __name__ == "__main__":
         pdb.set_trace()
         create_dataset(configuration)
     if command == "gen_logs":
-        benchmark_users(configuration)
-        benchmark_traverse_from_roots(configuration)
+        #benchmark_users(configuration)
         benchmark_get_all_classes(configuration)
+        benchmark_traverse_from_roots(configuration)

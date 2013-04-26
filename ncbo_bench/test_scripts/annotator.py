@@ -3,9 +3,9 @@ import pdb
 import time
 import rest
 
-REST_EPR = "localhost:9393"
 APIKEY = ""
 REST_EPR = "ncbo-stg-app-15"
+REST_EPR = "localhost:9393"
 
 ABSTRACTS_TEST_FILE = "./data/Pubmed_ET.txt"
 
@@ -43,13 +43,14 @@ class Transaction(object):
 
         try:
             text = self.abstracts[self.abstract_index]
-            #for level in [0,2,4,8,16]:
-            #for level in [0,2,4]:
-            for level in [0]:
+            for level in [0,1,2,8]:
                 ontologies = self.sample('annotator_%s'%level,lambda: self.api.annotate(text,level))
         except Exception, exc:
             print exc
-        self.abstract_index += 1
+        if self.abstract_index < len(self.abstracts) - 1:
+            self.abstract_index += 1
+        else:
+            self.abstract_index = 0
 
 if __name__ == '__main__':
     trans = Transaction()

@@ -3,9 +3,9 @@ import pdb
 import time
 import rest
 
+APIKEY = ""
 REST_EPR = "localhost:9393"
-REST_EPR = "ncbo-stg-app-15"
-APIKEY = "XXXXXXXXXXX"
+REST_EPR = "ncbo-stg-app-15:80"
 
 class Transaction(object):
 
