@@ -9,3 +9,8 @@ data/ontologies/SNOMEDCT_1353_OWL.zip
 *.pyc
 
 *.csv
+
+data/Pubmed_ET.txt
+
+
+ncbo_bench/results/
