@@ -151,10 +151,13 @@ class Rest:
         route = "/ontologies/%s/classes/%s/children"%(acr,urllib.quote(cls_id,''))
         return json.loads(self.get(route,data))["classes"]
 
-    def get_classes(self, acr, page=1,size=500):
+    def get_classes(self, acr, page=1,size=500,no_parse=True):
         data = { "apikey" : self.key , "page" : page , "pagesize" : size }
         route = "/ontologies/%s/classes"%(acr)
-        return json.loads(self.get(route,data))
+        r = self.get(route,data)
+        if no_parse:
+            return r
+        return json.loads(r)
 
     def get_tree(self, acr, cls_id):
         data = { "apikey" : self.key }
