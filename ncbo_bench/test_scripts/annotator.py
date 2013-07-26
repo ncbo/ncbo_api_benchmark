@@ -5,7 +5,6 @@ import rest
 
 APIKEY = ""
 REST_EPR = "ncbo-stg-app-15"
-REST_EPR = "localhost:9393"
 
 ABSTRACTS_TEST_FILE = "./data/Pubmed_ET.txt"
 

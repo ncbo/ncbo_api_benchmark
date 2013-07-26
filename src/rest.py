@@ -171,8 +171,10 @@ class Rest:
         route = "/ontologies/%s/classes/%s/ancestors"%(acr,urllib.quote(cls_id,''))
         return json.loads(self.get(route,data))
 
-    def annotate(self,text,max_level,no_parse=True):
+    def annotate(self,text,max_level,mappings=None,no_parse=True):
         data = { "apikey" : self.key, "text": text, "max_level": max_level, "no_context":"true" }
+        if mappings
+            data["mappings"] = "all"
         route = "/annotator"
         r = self.get(route,data)
         if no_parse:
