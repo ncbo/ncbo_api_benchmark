@@ -189,3 +189,29 @@ class Rest:
         if no_parse:
             return r
         return json.loads(r)
+
+    def mapping_stats(self,ontology=None, no_parse=True):
+        data = { "apikey" : self.key  }
+        route = "/mappings/statistics/ontologies/"
+        if ontology:
+            route += ontology
+        r = self.get(route,data)
+        if no_parse:
+            return r
+        return json.loads(r)
+
+    def mappings_for_ontology(self, ontology, page = 1, no_parse=True)
+        data = { "apikey" : self.key, "page" : page, "pagesize": pagesize  }
+        route = "ontologies/%s/mappings"%ontology
+        r = self.get(route,data)
+        if no_parse:
+            return r
+        return json.loads(r)
+
+    def mappings_for_class(self, ontology,class_i  }
+        class_id_encoded = urllib.quote(class_id,'')
+        route = "/ontologies/%s/classes/%s/mappings"%(ontology,class_id_encoded)
+        r = self.get(route,data)
+        if no_parse:
+            return r
+        return json.loads(r)
