@@ -141,9 +141,13 @@ class Rest:
         data_back = json.loads(self.get(route,data))
         return data_back
 
-    def get_roots(self, acr):
+    def get_roots(self, acr,no_parse=True,include=None):
         data = { "apikey" : self.key }
         route = "/ontologies/%s/classes/roots"%(acr)
+        if include:
+            data["include"]=include
+        if no_parse:
+            return r
         return json.loads(self.get(route,data))
 
     def get_children(self, acr, cls_id):
@@ -151,9 +155,11 @@ class Rest:
         route = "/ontologies/%s/classes/%s/children"%(acr,urllib.quote(cls_id,''))
         return json.loads(self.get(route,data))["classes"]
 
-    def get_classes(self, acr, page=1,size=500,no_parse=True):
+    def get_classes(self, acr, page=1,size=500,no_parse=True,include=None):
         data = { "apikey" : self.key , "page" : page , "pagesize" : size }
         route = "/ontologies/%s/classes"%(acr)
+        if include:
+            data["include"]=include
         r = self.get(route,data)
         if no_parse:
             return r
