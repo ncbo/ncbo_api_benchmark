@@ -41,7 +41,8 @@ class Rest:
             params = urllib.urlencode(doc)
             headers = {}
             if method == "PUT" or method == "POST":
-                headers = {"Content-type": "application/x-www-form-urlencoded", "Accept": "application/json"}
+                headers = {"Content-type": "application/x-www-form-urlencoded", 
+                          "Accept": "application/json"}
                 if self.proxy_host:
                     route = "http://" + self.host + route
                 conn.request(method, route, params, headers)
@@ -182,7 +183,7 @@ class Rest:
 
     def annotate(self,text,max_level,mappings=None,no_parse=True):
         data = { "apikey" : self.key, "text": text, "max_level": max_level, "no_context":"true" }
-        if mappings
+        if mappings:
             data["mappings"] = "all"
         route = "/annotator"
         r = self.get(route,data)
@@ -200,7 +201,7 @@ class Rest:
             return r
         return json.loads(r)
 
-    def mappings_for_ontology(self, ontology, page = 1, no_parse=True)
+    def mappings_for_ontology(self, ontology, page = 1, no_parse=True):
         data = { "apikey" : self.key, "page" : page, "pagesize": pagesize  }
         route = "ontologies/%s/mappings"%ontology
         r = self.get(route,data)
@@ -208,7 +209,7 @@ class Rest:
             return r
         return json.loads(r)
 
-    def mappings_for_class(self, ontology,class_i  }
+    def mappings_for_class(self, ontology,class_i):
         class_id_encoded = urllib.quote(class_id,'')
         route = "/ontologies/%s/classes/%s/mappings"%(ontology,class_id_encoded)
         r = self.get(route,data)
