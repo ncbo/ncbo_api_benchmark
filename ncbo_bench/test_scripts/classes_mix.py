@@ -26,6 +26,11 @@ class Transaction(object):
         res = action()
         et = time.time()
         self.custom_timers[group].append((st,et))
+        intl_times = self.api.last_internal_times()
+        for (group,trace) in intl_times:
+            if group not in self.custom_timers:
+                self.custom_timers[group]=[] 
+            #self.custom_timers[group].append((st,st+trace))
         return res
 
     def run(self):
@@ -43,6 +48,8 @@ class Transaction(object):
             classes = json.loads(classes_response)
             if classes['nextPage']:
                 self.pageno = classes['nextPage']
+            else:
+                self.pageno = 1
         except Exception, exc:
             print exc
 
