@@ -14,6 +14,7 @@ class Rest:
         self.record_on_file = None
         self.proxy_host = None
         self.proxy_port = None
+        self.last_headers = None
 
     def use_proxy(self,host,port):
         self.proxy_host = host
@@ -56,10 +57,19 @@ class Rest:
                 conn.request(method, call, "", headers)
             response = conn.getresponse()
             status, reason = response.status, response.reason
+            self.last_headers = response.msg.headers
             data = response.read()
             if status / 100 == 2:
                 return data
             raise Exception("HTTP error status %s call %s response %s"%(status,route,data))
+
+    def last_internal_times(self):
+        if self.last_headers:
+            ncbo_headers = filter(lambda x: x.startswith("ncbo-time"),self.last_headers)
+            ncbo_headers = map(lambda x: x.split(":"), ncbo_headers)
+            ncbo_headers = map(lambda x: (x[0].strip(),float(x[1].strip())), ncbo_headers)
+            return ncbo_headers
+        return []
 
     def post(self, route, doc,files=None):
         return self.request(route, doc, method="POST",files=files)
