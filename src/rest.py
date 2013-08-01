@@ -147,9 +147,10 @@ class Rest:
         route = "/ontologies/%s/classes/roots"%(acr)
         if include:
             data["include"]=include
+        response = self.get(route,data)
         if no_parse:
-            return r
-        return json.loads(self.get(route,data))
+            return response
+        return json.loads(response)
 
     def get_children(self, acr, cls_id):
         data = { "apikey" : self.key }
