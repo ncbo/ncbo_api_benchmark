@@ -87,10 +87,13 @@ class Rest:
         self.record_on_file.close()
         self.record_on_file = None
 
-    def get_all_users(self):
+    def get_all_users(self,no_parse=True):
         route = "/users"
         data = { "apikey" : self.key }
-        return json.loads(self.get(route,data))
+        response = self.get(route,data)
+        if no_parse:
+            return response
+        return json.loads(response)
 
     def get_user(self,user_id):
         route = "/users/%s"%urllib.quote(user_id)
