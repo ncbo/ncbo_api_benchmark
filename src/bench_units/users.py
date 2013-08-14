@@ -10,11 +10,11 @@ class UsersBenchmark(object):
     def __init__(self,client:
         self.client = client
 
-    def run(self):
+    def run(self,n=100):
         users = self.client.get_all_users()
         users = json.loads(users)
         random.shuffle(users)
-        for user in users[:100]:
+        for user in users[n]:
             username = user["username"]
             self.client.get_user(username)
 
