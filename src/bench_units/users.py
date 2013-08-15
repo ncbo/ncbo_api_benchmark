@@ -1,9 +1,11 @@
 import pdb
+import time
 import sys
 import api
 import json
 import random
 import ezbench
+import os
 
 # This benchmark gets the lists of users
 # shuffles them retrieves first 100 (default)
@@ -47,5 +49,6 @@ if __name__ == '__main__':
                 %(g,benchmark.median(group=g)["total"],benchmark.maximum(group=g)["total"])
         percs = benchmark.percentiles(group=g,include=perc_points)
         ezbench.report.print_percentiles(percs,out=sys.stdout)
-    pdb.set_trace()
+    fout = os.path.join("results",
+              "bench_" + os.path.basename(__file__) + time.strftime("_%Y%m%d_%H%M_%S.csv"))
     benchmark.save(fout)
