@@ -15,6 +15,7 @@ class Rest:
         self.proxy_host = None
         self.proxy_port = None
         self.last_headers = None
+        self.last_request_path = None
 
     def last_query_info(self):
         trace_headers = filter(lambda x: x.startswith("ncbo-time-goo-"), self.last_headers)
@@ -23,6 +24,9 @@ class Rest:
         trace_headers = map(lambda x: (x[0],float(x[1])),trace_headers)
 
         return dict(trace_headers)
+
+    def last_request_path(self):
+        return self.last_request_path
 
     def use_proxy(self,host,port):
         self.proxy_host = host
@@ -55,6 +59,7 @@ class Rest:
                 if self.proxy_host:
                     route = "http://" + self.host + route
                 conn.request(method, route, params, headers)
+                self.last_request_path = None
             else:
                 call =  route + "?" + params
                 if self.record_on_file:
@@ -63,6 +68,7 @@ class Rest:
                 if self.proxy_host:
                     call = "http://" + self.host + call
                 conn.request(method, call, "", headers)
+                self.last_request_path = call
             response = conn.getresponse()
             status, reason = response.status, response.reason
             self.last_headers = response.msg.headers

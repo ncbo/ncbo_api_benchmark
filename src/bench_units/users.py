@@ -26,9 +26,11 @@ if __name__ == '__main__':
 
     def query_debug(api):
         return api.last_query_info()
+    def request_path(api):
+        return api.last_request_path
 
-    benchmark.link(api.Rest.get_all_users,subgroups=query_debug)
-    benchmark.link(api.Rest.get_user,subgroups=query_debug)
+    benchmark.link(api.Rest.get_all_users,subgroups=query_debug,data=request_path)
+    benchmark.link(api.Rest.get_user,subgroups=query_debug,data=request_path)
 
     api_key = os.environ["NCBO_API_KEY"]
     client = api.Rest(epr,key=api_key)
@@ -46,3 +48,4 @@ if __name__ == '__main__':
         percs = benchmark.percentiles(group=g,include=perc_points)
         ezbench.report.print_percentiles(percs,out=sys.stdout)
     pdb.set_trace()
+    benchmark.save(fout)
