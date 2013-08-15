@@ -16,6 +16,14 @@ class Rest:
         self.proxy_port = None
         self.last_headers = None
 
+    def last_query_info(self):
+        trace_headers = filter(lambda x: x.startswith("ncbo-time-goo-"), self.last_headers)
+        skip_part = len("ncbo-time-goo-")
+        trace_headers = map(lambda x: x[skip_part:].strip().split(": "), trace_headers)
+        trace_headers = map(lambda x: (x[0],float(x[1])),trace_headers)
+
+        return dict(trace_headers)
+
     def use_proxy(self,host,port):
         self.proxy_host = host
         self.proxy_port = port
