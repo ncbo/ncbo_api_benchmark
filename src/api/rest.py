@@ -101,29 +101,25 @@ class Rest:
         self.record_on_file.close()
         self.record_on_file = None
 
-    def get_all_users(self,no_parse=True):
+    def get_all_users(self):
         route = "/users"
         data = { "apikey" : self.key }
-        response = self.get(route,data)
-        if no_parse:
-            return response
-        return json.loads(response)
+        return self.get(route,data)
 
     def get_user(self,user_id):
         route = "/users/%s"%urllib.quote(user_id)
         data = { "apikey" : self.key }
-        return json.loads(self.get(route,data))
+        return self.get(route,data)
 
     def get_all_ontologies(self):
         route = "/ontologies"
         data = { "apikey" : self.key }
-        return json.loads(self.get(route,data))
+        return self.get(route,data)
 
     def create_user(self,name,email,password):
         doc = { "email" : email, "password" : password }
         route = "/users/%s"%name
-        response = json.loads(self.put(route, doc))
-        return response["apikey"] if "apikey" in response else "bogus_api_key"
+        return self.put(route, doc)
 
     def create_ontology_submission(self,ontology):
         data_body = None
@@ -148,8 +144,7 @@ class Rest:
     def parse_submission(self, acr, submission_id):
         data = { "apikey" : self.key , "ontology_submission_id" : submission_id}
         route = "/ontologies/%s/submissions/%s/parse"%(acr,submission_id)
-        response = self.post(route, data)
-        return json.loads(response)
+        return self.post(route, data)
 
     def get_ontology(self, acr, submission_id=None,include=None):
         data = { "apikey" : self.key }
@@ -158,89 +153,102 @@ class Rest:
         if include:
             data["include"] = include
         route = "/ontologies/%s"%acr
-        ontology = json.loads(self.get(route,data))
-        return ontology
+        return self.get(route,data)
 
-    def get_ontology_submission(self, acr, submission_id,include=None):
-        data = { "apikey" : self.key , "ontology_submission_id" : submission_id}
+    def get_ontology_submission(self, acr, submission_id=None,include=None):
+        data = { "apikey" : self.key } 
         if include:
             data["include"]=include
-        route = "/ontologies/%s/submissions/%s"%(acr,submission_id)
-        data_back = json.loads(self.get(route,data))
-        return data_back
+        route = None
+        if submission_id:
+            route = "/ontologies/%s/submissions/%s"%(acr,submission_id)
+        else:
+            route = "/ontologies/%s/latest_submission"%acr
+        return self.get(route,data)
 
-    def get_roots(self, acr,no_parse=True,include=None):
+    def get_roots(self, acr,include=None):
         data = { "apikey" : self.key }
         route = "/ontologies/%s/classes/roots"%(acr)
         if include:
             data["include"]=include
-        response = self.get(route,data)
-        if no_parse:
-            return response
-        return json.loads(response)
+        return self.get(route,data)
 
     def get_children(self, acr, cls_id):
         data = { "apikey" : self.key }
         route = "/ontologies/%s/classes/%s/children"%(acr,urllib.quote(cls_id,''))
-        return json.loads(self.get(route,data))["classes"]
+        return self.get(route,data)
 
-    def get_classes(self, acr, page=1,size=500,no_parse=True,include=None):
+    def get_classes(self, acr, page=1,size=500,include=None):
         data = { "apikey" : self.key , "page" : page , "pagesize" : size }
         route = "/ontologies/%s/classes"%(acr)
         if include:
             data["include"]=include
-        r = self.get(route,data)
-        if no_parse:
-            return r
-        return json.loads(r)
+        return self.get(route,data)
 
     def get_tree(self, acr, cls_id):
         data = { "apikey" : self.key }
         route = "/ontologies/%s/classes/%s/tree"%(acr,urllib.quote(cls_id,''))
-        return json.loads(self.get(route,data))
+        return self.get(route,data)
 
     def get_descendants(self, acr, cls_id):
         data = { "apikey" : self.key }
         route = "/ontologies/%s/classes/%s/descendants"%(acr,urllib.quote(cls_id,''))
-        return json.loads(self.get(route,data))
+        return self.get(route,data)
 
     def get_ancestors(self, acr, cls_id):
         data = { "apikey" : self.key }
         route = "/ontologies/%s/classes/%s/ancestors"%(acr,urllib.quote(cls_id,''))
-        return json.loads(self.get(route,data))
+        return self.get(route,data)
 
-    def annotate(self,text,max_level,mappings=None,no_parse=True):
+    def annotate(self,text,max_level,mappings=None):
         data = { "apikey" : self.key, "text": text, "max_level": max_level, "no_context":"true" }
         if mappings:
             data["mappings"] = "all"
         route = "/annotator"
-        r = self.get(route,data)
-        if no_parse:
-            return r
-        return json.loads(r)
+        return self.get(route,data)
 
-    def mapping_stats(self,ontology=None, no_parse=True):
+    def mapping_stats(self,ontology=None):
         data = { "apikey" : self.key  }
         route = "/mappings/statistics/ontologies/"
         if ontology:
             route += ontology
-        r = self.get(route,data)
-        if no_parse:
-            return r
-        return json.loads(r)
+        return self.get(route,data)
 
-    def mappings_for_ontology(self, ontology, page = 1, no_parse=True):
+    def mappings_for_ontology(self, ontology, page = 1):
         data = { "apikey" : self.key, "page" : page, "pagesize": pagesize  }
         route = "ontologies/%s/mappings"%ontology
-        r = self.get(route,data)
-        if no_parse:
-            return r
-        return json.loads(r)
+        return self.get(route,data)
 
     def mappings_for_class(self, ontology,class_i):
+        data = { "apikey" : self.key  }
         class_id_encoded = urllib.quote(class_id,'')
         route = "/ontologies/%s/classes/%s/mappings"%(ontology,class_id_encoded)
-        r = self.get(route,data)
-        if no_parse:
-            return r
-        return json.loads(r)
+        return self.get(route,data)
+
+    def reviews(self,acr):
+        data = { "apikey" : self.key  }
+        route = "/ontologies/%s/reviews"%acr
+        return self.get(route,data)
+
+    def groups(self,acr):
+        data = { "apikey" : self.key  }
+        route = "/ontologies/%s/groups"%acr
+        return self.get(route,data)
+
+    def notes(self,acr):
+        data = { "apikey" : self.key  }
+        route = "/ontologies/%s/notes"%acr
+        return self.get(route,data)
+
+    def submissions(self,acr):
+        data = { "apikey" : self.key  }
+        route = "/ontologies/%s/submissions"%acr
+        return self.get(route,data)
+
+    def metrics(self,acr,submission):
+        data = { "apikey" : self.key  }
+        route = "/ontologies/%s/submissions/%s/metrics"
+        return self.get(route,data)
+
+
+
