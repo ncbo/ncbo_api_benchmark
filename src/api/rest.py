@@ -7,9 +7,9 @@ import pdb
 import multipart
 
 class Rest:
-    def __init__(self,host):
+    def __init__(self,host,key=None):
         self.host = host
-        self.key = None
+        self.key = key
         self.user_id = None
         self.record_on_file = None
         self.proxy_host = None

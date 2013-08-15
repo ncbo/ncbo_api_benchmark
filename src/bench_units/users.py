@@ -30,7 +30,8 @@ if __name__ == '__main__':
     benchmark.link(api.Rest.get_all_users,subgroups=query_debug)
     benchmark.link(api.Rest.get_user,subgroups=query_debug)
 
-    client = api.Rest(epr)
+    api_key = os.environ["NCBO_API_KEY"]
+    client = api.Rest(epr,key=api_key)
     perc_points = [60,90]
     ub = UsersBenchmark(client)
     for x in range(10):
