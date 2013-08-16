@@ -1,53 +1,72 @@
-import mechanize
 import pdb
 import time
-import rest
+import api
+import sys
+import os
+import ezbench
+import json
+import random
 
-APIKEY = ""
-REST_EPR = "localhost:9393"
-REST_EPR = "ncbo-stg-app-15:80"
+class OntologiesBenchmark(object):
+    def __init__(self,client):
+        self.client = client
 
-class Transaction(object):
+    def run(self,n=10):
+        ontologies = self.client.get_all_ontologies()
+        ontologies = json.loads(ontologies)
+        random.shuffle(ontologies)
+        if n != None:
+            ontologies=ontologies[:n]
+        for ont in ontologies:
+            acronym = ont["acronym"]
+            ont_data = self.client.get_ontology(acronym)
+            self.client.reviews(acronym)
+            self.client.notes(acronym)
+            self.client.groups(acronym)
+            self.client.submissions(acronym)
+            try:
+                submission = self.client.get_ontology_submission(acronym)
+            except:
+                "ontology has no parsed submissions"
+                continue
 
-    def __init__(self):
-        self.api = rest.Rest(REST_EPR)
-        self.api.key = APIKEY
-        pass
+            submission = json.loads(submission)
+            if "submissionId" not in submission:
+                continue
 
-    def sample(self,group,action):
-        if group not in self.custom_timers:
-            self.custom_timers[group]=[] 
-        st = time.time()
-        res = action()
-        et = time.time()
-        self.custom_timers[group].append((st,et))
-        return res
-
-    def run(self):
-        #run clean timers
-        self.start_time = time.time()
-        self.custom_timers = dict()
-
-        try:
-            ontologies = self.sample('all_ontologies',lambda: self.api.get_all_ontologies())
-        except Exception, exc:
-            print exc
-
-        #TODO benchamrk include all.
-
-        #for ont in ontologies:
-        #    start_timer = time.time()
-        #    ont = self.api.get_ontology(ont['acronym'])
-        #    latency = time.time() - start_timer
-        #    self.custom_timers['single_ontology'] = latency
-        #    start_timer = time.time()
-        #    ont = self.api.get_ontology(ont['acronym'],include="all")
-        #    latency = time.time() - start_timer
-        #    self.custom_timers['single_ontology_include_all'] = latency
-
+            sid = submission["submissionId"]
+            try:
+                self.client.metrics(acronym,sid)
+            except:
+                pass
 
 if __name__ == '__main__':
-    trans = Transaction()
-    trans.run()
-    print trans.custom_timers
+    epr = sys.argv[1]
+    print "Using %s ..."%epr
+    benchmark = ezbench.Benchmark()
+    def query_debug(api):
+        return api.last_query_info()
+    def request_path(api):
+        return api.last_request_path
 
+    benchmark.link(api.Rest.get_all_ontologies,subgroups=query_debug,data=request_path)
+    benchmark.link(api.Rest.get_ontology,subgroups=query_debug,data=request_path)
+    benchmark.link(api.Rest.reviews,subgroups=query_debug,data=request_path)
+    benchmark.link(api.Rest.notes,subgroups=query_debug,data=request_path)
+    benchmark.link(api.Rest.groups,subgroups=query_debug,data=request_path)
+    benchmark.link(api.Rest.submissions,subgroups=query_debug,data=request_path)
+    benchmark.link(api.Rest.metrics,subgroups=query_debug,data=request_path)
+
+    api_key = os.environ["NCBO_API_KEY"]
+    client = api.Rest(epr,key=api_key)
+    onts = OntologiesBenchmark(client)
+    for x in range(20):
+        print "running iteration %s"%x
+        onts.run(n=10)
+        onts.run(n=2)
+        onts.run(n=2)
+        onts.run(n=2)
+    ezbench.report.show(benchmark)
+    fout = os.path.join("results",
+              "bench_" + os.path.basename(__file__) + time.strftime("_%Y%m%d_%H%M_%S.csv"))
+    benchmark.save(fout)
