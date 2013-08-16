@@ -199,6 +199,12 @@ class Rest:
         route = "/ontologies/%s/classes/%s/ancestors"%(acr,urllib.quote(cls_id,''))
         return self.get(route,data)
 
+    def get_parents(self, acr, cls_id,
+             include="prefLabel,definition,synonym,properties,childrenCount,children"):
+        data = { "apikey" : self.key ,"include": include }
+        route = "/ontologies/%s/classes/%s/parents"%(acr,urllib.quote(cls_id,''))
+        return self.get(route,data)
+
     def annotate(self,text,max_level,mappings=None):
         data = { "apikey" : self.key, "text": text, "max_level": max_level, "no_context":"true" }
         if mappings:
