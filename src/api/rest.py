@@ -165,7 +165,8 @@ class Rest:
             route = "/ontologies/%s/latest_submission"%acr
         return self.get(route,data)
 
-    def get_roots(self, acr,include=None):
+    def get_roots(self, acr,
+            include="prefLabel,definition,synonym,properties,childrenCount,children"):
         data = { "apikey" : self.key }
         route = "/ontologies/%s/classes/roots"%(acr)
         if include:
@@ -177,15 +178,20 @@ class Rest:
         route = "/ontologies/%s/classes/%s/children"%(acr,urllib.quote(cls_id,''))
         return self.get(route,data)
 
-    def get_classes(self, acr, page=1,size=500,include=None):
-        data = { "apikey" : self.key , "page" : page , "pagesize" : size }
+    def get_classes(self, acr, page=1,size=None,
+                    include="prefLabel,definition,synonym,properties,childrenCount,children"):
+        data = { "apikey" : self.key , "page" : page ,
+                 "include" : include }
+        if size != None:
+            data["size"] = size
         route = "/ontologies/%s/classes"%(acr)
         if include:
             data["include"]=include
         return self.get(route,data)
 
-    def get_tree(self, acr, cls_id):
-        data = { "apikey" : self.key }
+    def get_tree(self, acr, cls_id,
+                 include="prefLabel,definition,synonym,properties,childrenCount,children"):
+        data = { "apikey" : self.key, "include": include }
         route = "/ontologies/%s/classes/%s/tree"%(acr,urllib.quote(cls_id,''))
         return self.get(route,data)
 
@@ -194,8 +200,9 @@ class Rest:
         route = "/ontologies/%s/classes/%s/descendants"%(acr,urllib.quote(cls_id,''))
         return self.get(route,data)
 
-    def get_ancestors(self, acr, cls_id):
-        data = { "apikey" : self.key }
+    def get_ancestors(self, acr, cls_id,
+             include="prefLabel,definition,synonym,properties,childrenCount,children"):
+        data = { "apikey" : self.key ,"include": include }
         route = "/ontologies/%s/classes/%s/ancestors"%(acr,urllib.quote(cls_id,''))
         return self.get(route,data)
 
