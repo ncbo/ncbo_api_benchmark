@@ -18,11 +18,10 @@ class Rest:
         self.last_request_path = None
 
     def last_query_info(self):
-        trace_headers = filter(lambda x: x.startswith("ncbo-time-goo-"), self.last_headers)
+        trace_headers = filter(lambda x: x.startswith("Ncbo-Time-Goo-"), self.last_headers)
         skip_part = len("ncbo-time-goo-")
         trace_headers = map(lambda x: x[skip_part:].strip().split(": "), trace_headers)
         trace_headers = map(lambda x: (x[0],float(x[1])),trace_headers)
-
         return dict(trace_headers)
 
     def last_request_path(self):
@@ -246,8 +245,8 @@ class Rest:
         return self.get(route,data)
 
     def metrics(self,acr,submission):
-        data = { "apikey" : self.key  }
-        route = "/ontologies/%s/submissions/%s/metrics"
+        data = { "apikey" : self.key }
+        route = "/ontologies/%s/submissions/%s/metrics"%(acr,submissions)
         return self.get(route,data)
 
 
