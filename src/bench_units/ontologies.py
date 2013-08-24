@@ -58,6 +58,7 @@ if __name__ == '__main__':
     benchmark.link(api.Rest.metrics,subgroups=query_debug,data=request_path)
 
     api_key = os.environ["NCBO_API_KEY"]
+
     client = api.Rest(epr,key=api_key)
     onts = OntologiesBenchmark(client)
     for x in range(20):

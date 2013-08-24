@@ -26,7 +26,7 @@ class ClassesBenchmark(object):
             all_pages = range(2,page["pageCount"]+1)
             random.shuffle(all_pages)
             count = 0
-            while count < 3 && len(all_pages) > 0:
+            while count < 3 and len(all_pages) > 0:
                 pagen = all_pages.pop(0)
                 page = self.client.get_classes(acronym,page=pagen)
                 page = json.loads(page)
@@ -34,7 +34,7 @@ class ClassesBenchmark(object):
                 count += 1
             random.shuffle(classes)
             count = 0
-            while count < 200 && len(classes) > 0:
+            while count < 200 and len(classes) > 0:
                 cls = classes.pop(0)
                 
 
@@ -55,7 +55,7 @@ if __name__ == '__main__':
     benchmark.link(api.Rest.get_children,subgroups=query_debug,data=request_path)
     benchmark.link(api.Rest.get_descendants,subgroups=query_debug,data=request_path)
     benchmark.link(api.Rest.get_ancestors,subgroups=query_debug,data=request_path)
-    benchmark.link(api.Rest.get_par,subgroups=query_debug,data=request_path)
+    benchmark.link(api.Rest.get_parents,subgroups=query_debug,data=request_path)
     api_key = os.environ["NCBO_API_KEY"]
     client = api.Rest(epr,key=api_key)
     clsb = ClassesBenchmark(client)
