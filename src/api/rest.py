@@ -166,7 +166,7 @@ class Rest:
         return self.get(route,data)
 
     def get_roots(self, acr,
-            include="prefLabel,definition,synonym,properties,childrenCount,children"):
+            include="prefLabel,definition,synonym,childrenCount,children"):
         data = { "apikey" : self.key }
         route = "/ontologies/%s/classes/roots"%(acr)
         if include:
@@ -179,7 +179,7 @@ class Rest:
         return self.get(route,data)
 
     def get_classes(self, acr, page=1,size=None,
-                    include="prefLabel,definition,synonym,properties,childrenCount,children"):
+                    include="prefLabel,definition,synonym,childrenCount,children"):
         data = { "apikey" : self.key , "page" : page ,
                  "include" : include }
         if size != None:
@@ -190,7 +190,7 @@ class Rest:
         return self.get(route,data)
 
     def get_tree(self, acr, cls_id,
-                 include="prefLabel,definition,synonym,properties,childrenCount,children"):
+                 include="prefLabel,definition,synonym,childrenCount,children"):
         data = { "apikey" : self.key, "include": include }
         route = "/ontologies/%s/classes/%s/tree"%(acr,urllib.quote(cls_id,''))
         return self.get(route,data)
@@ -201,15 +201,21 @@ class Rest:
         return self.get(route,data)
 
     def get_ancestors(self, acr, cls_id,
-             include="prefLabel,definition,synonym,properties,childrenCount,children"):
+             include="prefLabel,definition,synonym,childrenCount,children"):
         data = { "apikey" : self.key ,"include": include }
         route = "/ontologies/%s/classes/%s/ancestors"%(acr,urllib.quote(cls_id,''))
         return self.get(route,data)
 
     def get_parents(self, acr, cls_id,
-             include="prefLabel,definition,synonym,properties,childrenCount,children"):
+             include="prefLabel,definition,synonym,childrenCount,children"):
         data = { "apikey" : self.key ,"include": include }
         route = "/ontologies/%s/classes/%s/parents"%(acr,urllib.quote(cls_id,''))
+        return self.get(route,data)
+
+    def get_class(self, acr, cls_id,
+             include="prefLabel,definition,synonym,properties,childrenCount,children"):
+        data = { "apikey" : self.key ,"include": include }
+        route = "/ontologies/%s/classes/%s"%(acr,urllib.quote(cls_id,''))
         return self.get(route,data)
 
     def annotate(self,text,max_level,mappings=None):
