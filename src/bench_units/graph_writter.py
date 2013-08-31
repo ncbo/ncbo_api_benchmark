@@ -14,9 +14,13 @@ class GraphWritterBenchmark(object):
 
     def run(self):
         graph = "http://data.bioportal.org/benchmark/graph/go"
-        with file("./data/go.owl","r") as data:
+        f = "./data/NCITNCBO_ecxb.nt"
+        f = "./data/go_ecxb.nt"
+        #f = "./data/go.nt"
+        ctype = "application/x-turtle" #"application/rdf+xml"
+        with file(f,"r") as data:
             triples = data.read()
-            self.client.append_triples(triples,graph,"application/rdf+xml")
+            self.client.append_triples(triples,graph,ctype)
         #"""SELECT (count(?s) as ?c) WHERE { GRAPH <http://data.bioportal.org/benchmark/graph/go> { ?s a ?o }}"""
         self.client.delete_graph(graph)
 
