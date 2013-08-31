@@ -12,6 +12,7 @@ data/ontologies/SNOMEDCT_1353_OWL.zip
 
 data/Pubmed_ET.txt
 *.owl
+*.nt
 
 
 ncbo_bench/results/
