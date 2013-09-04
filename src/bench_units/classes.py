@@ -6,6 +6,7 @@ import os
 import ezbench
 import json
 import random
+import traceback
 
 class ClassesBenchmark(object):
 
@@ -14,7 +15,8 @@ class ClassesBenchmark(object):
 
     def run(self,use_onts=None):
         if use_onts == None:
-            use_onts = ["BRO","NIFSTD","ICPC2P","BIOMODELS","PHARE","HINO","NDDF","VO"]
+            #errors for roots in NIFSTD and NCIT ICPC2P
+            use_onts = ["NCIT","BRO","BIOMODELS","SNOMEDCT","PHARE","HINO","NDDF","VO"]
         for acronym in use_onts:
             ont_data = self.client.get_ontology(acronym)
             roots = self.client.get_roots(acronym)
@@ -22,22 +24,47 @@ class ClassesBenchmark(object):
             classes = []
             page = self.client.get_classes(acronym)
             page = json.loads(page)
-            classes.extend(page)
+            classes.extend(page["collection"])
             all_pages = range(2,page["pageCount"]+1)
             random.shuffle(all_pages)
             count = 0
-            while count < 3 and len(all_pages) > 0:
+            while count < 2 and len(all_pages) > 0:
                 pagen = all_pages.pop(0)
                 page = self.client.get_classes(acronym,page=pagen)
                 page = json.loads(page)
-                classes.extend(page)
+                classes.extend(page["collection"])
                 count += 1
             random.shuffle(classes)
+            classes = roots + classes
             count = 0
-            while count < 200 and len(classes) > 0:
+            while count < 5 and len(classes) > 0:
+                count += 1
                 cls = classes.pop(0)
-                
+                try:
+                    self.client.get_class(acronym,cls["@id"])
+                    self.client.get_descendants(acronym,cls["@id"])
+                    self.client.get_parents(acronym,cls["@id"])
+                    self.client.get_children(acronym,cls["@id"])
+                    self.client.get_ancestors(acronym,cls["@id"])
+                    self.client.get_tree(acronym,cls["@id"])
+                except Exception, e:
+                    print "error retrieving ",cls["@id"]
+                    traceback.print_exc(file=sys.stdout)
+                    pdb.set_trace()
 
+            random.shuffle(classes)
+            count = 0
+            while count < 5 and len(classes) > 0: 
+                count += 1
+                cls = classes.pop(0)
+                self.client.get_class(acronym,cls["@id"])
+                self.client.get_descendants(acronym,cls["@id"])
+                self.client.get_parents(acronym,cls["@id"])
+                self.client.get_children(acronym,cls["@id"])
+                self.client.get_ancestors(acronym,cls["@id"])
+                self.client.get_tree(acronym,cls["@id"])
+
+                  
 
 if __name__ == '__main__':
     epr = sys.argv[1]
@@ -59,7 +86,7 @@ if __name__ == '__main__':
     api_key = os.environ["NCBO_API_KEY"]
     client = api.Rest(epr,key=api_key)
     clsb = ClassesBenchmark(client)
-    clsb.run(use_onts=["BRO"])
+    clsb.run(use_onts=None)
     ezbench.report.show(benchmark)
     fout = os.path.join("results",
               "bench_" + os.path.basename(__file__) + time.strftime("_%Y%m%d_%H%M_%S.csv"))
