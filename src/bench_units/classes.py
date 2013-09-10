@@ -84,8 +84,8 @@ if __name__ == '__main__':
     benchmark.link(api.Rest.get_roots,subgroups=query_debug,data=request_path)
     benchmark.link(api.Rest.get_tree,subgroups=query_debug,data=request_path)
     benchmark.link(api.Rest.get_children,subgroups=query_debug,data=request_path)
-    benchmark.link(api.Rest.get_descendants,subgroups=query_debug,data=request_path)
-    benchmark.link(api.Rest.get_ancestors,subgroups=query_debug,data=request_path)
+    #benchmark.link(api.Rest.get_descendants,subgroups=query_debug,data=request_path)
+    #benchmark.link(api.Rest.get_ancestors,subgroups=query_debug,data=request_path)
     benchmark.link(api.Rest.get_parents,subgroups=query_debug,data=request_path)
     api_key = os.environ["NCBO_API_KEY"]
     client = api.Rest(epr,key=api_key)
