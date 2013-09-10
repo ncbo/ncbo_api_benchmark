@@ -80,6 +80,7 @@ if __name__ == '__main__':
         return api.last_request_path
 
     benchmark.link(api.Rest.get_classes,subgroups=query_debug,data=request_path)
+    benchmark.link(api.Rest.get_class,subgroups=query_debug,data=request_path)
     benchmark.link(api.Rest.get_roots,subgroups=query_debug,data=request_path)
     benchmark.link(api.Rest.get_tree,subgroups=query_debug,data=request_path)
     benchmark.link(api.Rest.get_children,subgroups=query_debug,data=request_path)
