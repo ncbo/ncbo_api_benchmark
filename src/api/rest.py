@@ -24,6 +24,12 @@ class Rest:
         trace_headers = map(lambda x: (x[0],float(x[1])),trace_headers)
         return dict(trace_headers)
 
+    def ez_data(self):
+        return self.last_request_path
+
+    def ez_sub(self):
+        return self.last_query_info()
+
     def last_request_path(self):
         return self.last_request_path
 
