@@ -15,6 +15,10 @@ Goo.configure do |conf|
                           update: "http://#{epr}/update/",
                           options: { rules: :NONE })
   conf.add_redis_backend(:host => "localhost")
+  conf.add_namespace(:owl, RDF::Vocabulary.new("http://www.w3.org/2002/07/owl#"))
+  conf.add_namespace(:rdfs, RDF::Vocabulary.new("http://www.w3.org/2000/01/rdf-schema#"))
+  conf.add_namespace(:foaf, RDF::Vocabulary.new("http://xmlns.com/foaf/0.1/"))
+  conf.add_namespace(:rdf, RDF::Vocabulary.new("http://www.w3.org/1999/02/22-rdf-syntax-ns#"))
 end
 
 puts "using ... #{Goo.sparql_data_client.url}"
