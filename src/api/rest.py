@@ -207,7 +207,7 @@ class Rest:
         return self.get(route,data)
 
     def get_ancestors(self, acr, cls_id,
-             include="prefLabel,definition,synonym,childrenCount,children"):
+             include="prefLabel,definition,synonym,childrenCount"):
         data = { "apikey" : self.key ,"include": include }
         route = "/ontologies/%s/classes/%s/ancestors"%(acr,urllib.quote(cls_id,''))
         return self.get(route,data)
