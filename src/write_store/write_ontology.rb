@@ -23,7 +23,7 @@ end
 
 puts "using ... #{Goo.sparql_data_client.url}"
 
-5.time do |i|
+5.times do |i|
   puts "#{i} asserting data ..."
   graph = "http://test.bioontology.org/test/nemo"
   ntriples_file_path = "../../data/nemo_ontology.ntriples"
