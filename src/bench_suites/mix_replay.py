@@ -13,7 +13,7 @@ if __name__ == "__main__":
     api_key = os.environ["NCBO_API_KEY"]
     client = api.Rest(epr,key=api_key)
 
-    replay = ezbench.Replay(log_file,client,threads_n=10)
+    replay = ezbench.Replay(log_file,client,threads_n=1)
 
     scr = ezbench.report.ShowThread(replay.forked)
     scr.start()

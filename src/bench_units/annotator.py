@@ -1,10 +1,13 @@
-import mechanize
 import pdb
 import time
-import rest
-
-APIKEY = ""
-REST_EPR = "ncbo-stg-app-15"
+import api
+import sys
+import os
+import ezbench
+import json
+import random
+import traceback
+import StringIO
 
 ABSTRACTS_TEST_FILE = "./data/Pubmed_ET.txt"
 
@@ -17,41 +20,53 @@ def get_abstracts():
                 abstracts.append(abstract)
     return abstracts[1:]
 
-class Transaction(object):
+class AnnotatorBenchmark(object):
 
-    def __init__(self):
-        self.api = rest.Rest(REST_EPR)
-        self.api.key = APIKEY
+    def __init__(self,client):
+        self.client = client
+        self.errors = StringIO.StringIO()
         self.abstracts = get_abstracts()
-        self.abstract_index = 0
-        pass
 
-    def sample(self,group,action):
-        if group not in self.custom_timers:
-            self.custom_timers[group]=[] 
-        st = time.time()
-        res = action()
-        et = time.time()
-        self.custom_timers[group].append((st,et))
-        return res
 
     def run(self):
-        #run clean timers
-        self.start_time = time.time()
-        self.custom_timers = dict()
-
         try:
-            text = self.abstracts[self.abstract_index]
-            for level in [0,1,2,8]:
-                ontologies = self.sample('annotator_%s'%level,lambda: self.api.annotate(text,level))
-        except Exception, exc:
-            print exc
-        if self.abstract_index < len(self.abstracts) - 1:
-            self.abstract_index += 1
-        else:
-            self.abstract_index = 0
+            for i in range(len(self.abstracts)):
+                abst = self.abstract[i]
+                self.client.annotate(acronym,abst)
+                self.client.annotate_with_mappings(acronym,abst)
+                self.client.annotate_with_hierarchy(acronym,abst)
+                self.client.annotate_with_mappings_hiearchies(acronym,abst)
+        except Exception, e:
+            self.errors.write("error annotating abstract %d"%i)
+            traceback.print_exc(file=self.errors)
+
 
 if __name__ == '__main__':
-    trans = Transaction()
-    trans.run()
-    print trans.custom_timers
+    epr = sys.argv[1]
+
+    print "Using %s ..."%epr
+    benchmark = ezbench.Benchmark()
+
+    def query_debug(api):
+        return api.last_query_info()
+    def request_path(api):
+        return api.last_request_path
+
+    benchmark.link(api.Rest.annotate,subgroups=query_debug,data=request_path)
+    benchmark.link(api.Rest.annotate_with_hierarchy,subgroups=query_debug,data=request_path)
+    benchmark.link(api.Rest.annotate_with_mappings,subgroups=query_debug,data=request_path)
+    benchmark.link(api.Rest.annotate_with_mappings_hiearchies,
+            subgroups=query_debug,data=request_path)
+
+    api_key = os.environ["NCBO_API_KEY"]
+    client = api.Rest(epr,key=api_key)
+    clsb = AnnotatorBenchmark(client)
+    scr = ezbench.report.ShowThread(benchmark)
+    scr.start()
+    clsb.run(use_onts=None)
+    scr.end()
+    ezbench.report.show(benchmark)
+    fout = os.path.join("results",
+              "bench_" + os.path.basename(__file__) + time.strftime("_%Y%m%d_%H%M_%S.csv"))
+    benchmark.save(fout)
+    print clsb.errors.getvalue()

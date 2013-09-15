@@ -224,8 +224,25 @@ class Rest:
         route = "/ontologies/%s/classes/%s"%(acr,urllib.quote(cls_id,''))
         return self.get(route,data)
 
-    def annotate(self,text,max_level,mappings=None):
-        data = { "apikey" : self.key, "text": text, "max_level": max_level, "no_context":"true" }
+    def annotate_with_mappings(self,text):
+        data = { "apikey" : self.key, "text": text  }
+            data["mappings"] = "all"
+        route = "/annotator"
+        return self.get(route,data)
+
+    def annotate_with_hierarchy(self,text,max_level=5):
+        data = { "apikey" : self.key, "max_level": max_level }
+        route = "/annotator"
+        return self.get(route,data)
+    
+    def annotate_with_mappings_hiearchies(self,text,max_level=5):
+        data = { "apikey" : self.key, "text": text, "max_level": max_level }
+        data["mappings"] = "all"
+        route = "/annotator"
+        return self.get(route,data)
+
+    def annotate(self,text,max_level=0,mappings=None):
+        data = { "apikey" : self.key, "text": text, "max_level": max_level }
         if mappings:
             data["mappings"] = "all"
         route = "/annotator"
