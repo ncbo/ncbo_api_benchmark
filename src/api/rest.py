@@ -231,11 +231,15 @@ class Rest:
         route = "/annotator"
         return self.get(route,data)
 
-    def mapping_stats(self,ontology=None):
+    def mapping_stats(self):
         data = { "apikey" : self.key  }
         route = "/mappings/statistics/ontologies/"
-        if ontology:
-            route += ontology
+        return self.get(route,data)
+
+    def mapping_stats_ontology(self,ontology):
+        data = { "apikey" : self.key  }
+        route = "/mappings/statistics/ontologies/"
+        route += ontology
         return self.get(route,data)
 
     def mappings_for_ontology(self, ontology, page = 1):
@@ -243,7 +247,7 @@ class Rest:
         route = "ontologies/%s/mappings"%ontology
         return self.get(route,data)
 
-    def mappings_for_class(self, ontology,class_i):
+    def mappings_for_class(self, ontology,class_id):
         data = { "apikey" : self.key  }
         class_id_encoded = urllib.quote(class_id,'')
         route = "/ontologies/%s/classes/%s/mappings"%(ontology,class_id_encoded)
