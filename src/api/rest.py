@@ -295,5 +295,26 @@ class Rest:
         route = "/ontologies/%s/submissions/%s/metrics"%(acr,submissions)
         return self.get(route,data)
 
+    def batch(self,collection):
+        call_params = {
+            "http://www.w3.org/2002/07/owl#Class" : {
+                "collection" : collection,
+                "include" : "prefLabel,synonym"
+            },
+            "apikey" : self.apikey
+        }
+        call_params = json.dumps(call_params)
+        return self.post("/batch/",call_params)
+
+    def batch_10(self,collection):
+        return self.batch(self,collection)
+    def batch_50(self,collection):
+        return self.batch(self,collection)
+    def batch_100(self,collection):
+        return self.batch(self,collection)
+    def batch_200(self,collection):
+        return self.batch(self,collection)
+    def batch_500(self,collection):
+        return self.batch(self,collection)
 
 
