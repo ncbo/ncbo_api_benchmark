@@ -18,6 +18,7 @@ class BatchBenchmark(object):
 
     def run(self):
         use_onts = ["SNOMEDCT","HINO", "NDDF","VO","BIOMODELS","NCIT","BRO","PHARE"]
+        use_onts = ["SNOMEDCT"]
         classes = []
         for acronym in use_onts:
             ont_data = self.client.get_ontology(acronym)
