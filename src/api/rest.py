@@ -56,16 +56,16 @@ class Rest:
             else:
                 conn = httplib.HTTPConnection(self.proxy_host,self.proxy_port)
 
-            params = urllib.urlencode(doc)
             headers = {}
             if method == "PUT" or method == "POST":
-                headers = {"Content-type": "application/x-www-form-urlencoded", 
+                headers = {"Content-type": "application/json", 
                           "Accept": "application/json"}
                 if self.proxy_host:
                     route = "http://" + self.host + route
-                conn.request(method, route, params, headers)
+                conn.request(method, route, json.dumps(doc), headers)
                 self.last_request_path = None
             else:
+                params = urllib.urlencode(doc)
                 call =  route + "?" + params
                 if self.record_on_file:
                     self.record_on_file.write("GET %s\n"%(call))
@@ -201,7 +201,7 @@ class Rest:
 
     def annotate_with_mappings(self,text):
         data = { "apikey" : self.key, "text": text  }
-            data["mappings"] = "all"
+        data["mappings"] = "all"
         route = "/annotator"
         return self.get(route,data)
 
@@ -276,20 +276,18 @@ class Rest:
                 "collection" : collection,
                 "include" : "prefLabel,synonym"
             },
-            "apikey" : self.apikey
         }
-        call_params = json.dumps(call_params)
         return self.post("/batch/",call_params)
 
     def batch_10(self,collection):
-        return self.batch(self,collection)
+        return self.batch(collection)
     def batch_50(self,collection):
-        return self.batch(self,collection)
+        return self.batch(collection)
     def batch_100(self,collection):
-        return self.batch(self,collection)
+        return self.batch(collection)
     def batch_200(self,collection):
-        return self.batch(self,collection)
+        return self.batch(collection)
     def batch_500(self,collection):
-        return self.batch(self,collection)
+        return self.batch(collection)
 
 
