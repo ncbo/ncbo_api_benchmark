@@ -17,17 +17,18 @@ class MappingsBenchmark(object):
 
     def run(self):
         onts = self.client.get_all_ontologies()
-        acronym = map(lambda x: x["acronym"], onts)
+        onts = json.loads(onts)
+        acronyms = map(lambda x: x["acronym"], onts)
 
-        random.shuffle(acronyms)
-        for x in range(30):
-            stats = self.client.mapping_stats()
+        #random.shuffle(acronyms)
+        #for x in range(30):
+        #    stats = self.client.mapping_stats()
 
-        for x in range(3):
-            random.shuffle(acronyms)
-            for ont in acronyms:
-                stats = self.client.mapping_stats_ontology(ont)
-                maps = self.client.mappings_for_ontology(ont)
+        #for x in range(3):
+        #    random.shuffle(acronyms)
+        #    for ont in acronyms:
+        #        stats = self.client.mapping_stats_ontology(ont)
+        #        maps = self.client.mappings_for_ontology(ont)
             
         use_onts = ["SNOMEDCT","HINO", "NDDF","VO","BIOMODELS","NCIT","BRO","PHARE"]
         for acronym in use_onts:
@@ -48,7 +49,6 @@ class MappingsBenchmark(object):
                 count += 1
 
             random.shuffle(classes)
-            classes = roots + classes
             count = 0
             while count < 20 and len(classes) > 0:
                 count += 1
@@ -81,7 +81,7 @@ if __name__ == '__main__':
     clsb = MappingsBenchmark(client)
     scr = ezbench.report.ShowThread(benchmark)
     scr.start()
-    clsb.run(use_onts=None)
+    clsb.run()
     scr.end()
     ezbench.report.show(benchmark)
     fout = os.path.join("results",
