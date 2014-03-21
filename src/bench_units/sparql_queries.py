@@ -98,7 +98,8 @@ class SparqlQueryBenchmark(object):
             write_thread = threading.Thread(target=self.write_graphs)
             write_thread.start()
         self.run_queries()
-        write_thread.join()
+        if self.do_writes:
+            write_thread.join()
     
 
 if __name__ == '__main__':
