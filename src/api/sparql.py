@@ -5,7 +5,6 @@ import pdb
 import time
 import json
 import os
-import subprocess
 
 PREFIXES = """PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>
 PREFIX foaf: <http://xmlns.com/foaf/0.1/>
@@ -28,7 +27,7 @@ class SPARQL:
         self.epr = "http://" + epr
 
     def delete_graph(self,g):
-        return delete_graph(g,self.epr + '/data/')
+        self.update("DROP GRAPH <>"%g)
 
     def update(self,u):
         return update4s(u,self.epr + "/update/")
@@ -91,13 +90,6 @@ def update4s(update,epr):
     except Exception, e:
         traceback.print_exc(file=sys.stdout)
         raise e
-
-def delete_graph(graph,epr):
-    delete_with_curl = ["curl","-s","-X","DELETE","%s%s"%(epr,graph)]
-    p=subprocess.Popen(delete_with_curl,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
-    std, err = p.communicate()
-    ret = p.poll()
-    return ret
 
 def append_triples(data,epr,graph,contenttype):
     try:

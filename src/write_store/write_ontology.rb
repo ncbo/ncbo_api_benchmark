@@ -19,7 +19,12 @@ Goo.configure do |conf|
   conf.add_namespace(:rdfs, RDF::Vocabulary.new("http://www.w3.org/2000/01/rdf-schema#"))
   conf.add_namespace(:foaf, RDF::Vocabulary.new("http://xmlns.com/foaf/0.1/"),default=true)
   conf.add_namespace(:rdf, RDF::Vocabulary.new("http://www.w3.org/1999/02/22-rdf-syntax-ns#"))
+  conf.enable_cube do |opts|
+    opts[:host] = "localhost"
+    opts[:port] = 1180
+  end
 end
+Goo.use_cache=true
 
 puts "using ... #{Goo.sparql_data_client.url}"
 

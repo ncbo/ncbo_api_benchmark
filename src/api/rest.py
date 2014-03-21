@@ -62,7 +62,7 @@ class Rest:
                           "Accept": "application/json"}
                 if self.proxy_host:
                     route = "http://" + self.host + route
-                conn.request(method, route, json.dumps(doc), headers)
+                conn.request(method, route, json.dumps(doc,encoding="iso-8859-1"), headers)
                 self.last_request_path = None
             else:
                 params = urllib.urlencode(doc)
@@ -203,25 +203,27 @@ class Rest:
         data = { "apikey" : self.key, "text": text  }
         data["mappings"] = "all"
         route = "/annotator"
-        return self.get(route,data)
+        return self.post(route,data)
 
     def annotate_with_hierarchy(self,text,max_level=5):
         data = { "apikey" : self.key, "max_level": max_level }
         route = "/annotator"
-        return self.get(route,data)
+        return self.post(route,data)
     
     def annotate_with_mappings_hiearchies(self,text,max_level=5):
         data = { "apikey" : self.key, "text": text, "max_level": max_level }
         data["mappings"] = "all"
         route = "/annotator"
-        return self.get(route,data)
+        return self.post(route,data)
 
     def annotate(self,text,max_level=0,mappings=None):
         data = { "apikey" : self.key, "text": text, "max_level": max_level }
+        #data["no_context"]="true"
+        #data["no_links"]="true"
         if mappings:
             data["mappings"] = "all"
         route = "/annotator"
-        return self.get(route,data)
+        return self.post(route,data)
 
     def mapping_stats(self):
         data = { "apikey" : self.key  }
@@ -234,9 +236,9 @@ class Rest:
         route += ontology
         return self.get(route,data)
 
-    def mappings_for_ontology(self, ontology, page = 1):
+    def mappings_for_ontology(self, ontology, page = 1, pagesize = 50):
         data = { "apikey" : self.key, "page" : page, "pagesize": pagesize  }
-        route = "ontologies/%s/mappings"%ontology
+        route = "/ontologies/%s/mappings"%ontology
         return self.get(route,data)
 
     def mappings_for_class(self, ontology,class_id):

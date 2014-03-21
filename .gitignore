@@ -18,3 +18,4 @@ data/Pubmed_ET.txt
 ncbo_bench/results/
 
 *.lock
+*.gzip

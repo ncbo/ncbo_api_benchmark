@@ -8,6 +8,9 @@ gem 'multi_json'
 gem 'oj'
 gem 'rsolr'
 gem 'minitest', '< 5.0'
+gem 'cube-ruby', require: "cube"
 
-gem 'goo', :git => 'https://github.com/ncbo/goo.git'
-gem 'sparql-client', :git => 'https://github.com/ncbo/sparql-client.git'
+#gem 'goo', :git => 'https://github.com/ncbo/goo.git'
+gem 'goo', :path => '/Users/manuelso/work/stanford/workspace/goo'
+#gem 'sparql-client', :git => 'https://github.com/ncbo/sparql-client.git'
+gem 'sparql-client', :path => "/Users/manuelso/work/stanford/workspace/sparql-client"

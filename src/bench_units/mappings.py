@@ -20,15 +20,22 @@ class MappingsBenchmark(object):
         onts = json.loads(onts)
         acronyms = map(lambda x: x["acronym"], onts)
 
-        #random.shuffle(acronyms)
-        #for x in range(30):
-        #    stats = self.client.mapping_stats()
+        random.shuffle(acronyms)
+        for x in range(20):
+            stats = self.client.mapping_stats()
 
-        #for x in range(3):
-        #    random.shuffle(acronyms)
-        #    for ont in acronyms:
-        #        stats = self.client.mapping_stats_ontology(ont)
-        #        maps = self.client.mappings_for_ontology(ont)
+        for x in range(3):
+            random.shuffle(acronyms)
+            for ont in acronyms:
+                try:
+                    if len(json.loads(self.client.get_ontology_submission(ont))) > 0:
+                        stats = self.client.mapping_stats_ontology(ont)
+                        maps = self.client.mappings_for_ontology(ont)
+                except Exception, e:
+                    if "400" in str(e) or "404" in str(e):
+                        continue
+                    else:
+                        raise e
             
         use_onts = ["SNOMEDCT","HINO", "NDDF","VO","BIOMODELS","NCIT","BRO","PHARE"]
         for acronym in use_onts:
