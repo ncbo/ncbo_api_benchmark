@@ -46,7 +46,7 @@ class SparqlQueryBenchmark(object):
         while True:
             try:
                 query_string = self.queue.get(False)
-                self.client.query(query_string)
+                self.client.query(query_string,parse=False)
             except Queue.Empty, exc:
                 return
 
