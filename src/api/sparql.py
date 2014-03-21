@@ -55,6 +55,8 @@ def sol2dict(sol):
 def parse_json_result(res):
     j=json.loads(res)
     sols = []
+    if "results" not in j and "boolean" in j:
+        return j["boolean"]
     for sol in j["results"]["bindings"]:
         sols.append(sol2dict(sol))
     return sols
