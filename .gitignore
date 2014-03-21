@@ -19,3 +19,4 @@ ncbo_bench/results/
 
 *.lock
 *.gzip
+*.gz
