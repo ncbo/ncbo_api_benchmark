@@ -25,6 +25,7 @@ class SparqlQueryBenchmark(object):
         self.n_threads = n_threads
         self.load_query_log()
         self.data_folder = data_folder
+        self.do_writes = do_writes
         files = [ f for f in listdir(self.data_folder) if isfile(join(self.data_folder,f)) ]
         files = map(lambda x: join(self.data_folder,x),
                     filter(lambda x: x.endswith("nt.gzip"),files))
@@ -70,7 +71,6 @@ class SparqlQueryBenchmark(object):
             t.join()
 
     def write_graphs(self):
-        return
         while not self.queue.empty():
             for f in self.write_files:
                 if not self.queue.empty():
@@ -94,8 +94,9 @@ class SparqlQueryBenchmark(object):
                     sys.stdout.flush()
 
     def run(self):
-        write_thread = threading.Thread(target=self.write_graphs)
-        write_thread.start()
+        if self.do_writes:
+            write_thread = threading.Thread(target=self.write_graphs)
+            write_thread.start()
         self.run_queries()
         write_thread.join()
     
