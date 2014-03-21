@@ -27,7 +27,12 @@ class SPARQL:
         self.epr = "http://" + epr
 
     def delete_graph(self,g):
-        self.update("DROP GRAPH <>"%g)
+        try:
+            response = delete_graph(self.epr,g)
+        except Exception, e:
+            print "error deleting graph"
+            print e
+        #self.update("DROP GRAPH <%s>"%g)
 
     def update(self,u):
         return update4s(u,self.epr + "/update/")
@@ -76,6 +81,18 @@ def query(q,epr,f='application/json',soft_limit=-1,rules="NONE"):
         url.close()
         opener.close()
         return content
+    except Exception, e:
+        traceback.print_exc(file=sys.stdout)
+        raise e
+
+def delete_graph(epr,graph):
+    try:
+        opener = urllib2.build_opener(urllib2.HTTPHandler)
+        params = urllib.urlencode({})
+        request = urllib2.Request("%s/data/%s"%(epr,graph),params)
+        request.get_method = lambda: 'DELETE'
+        url = opener.open(request)
+        return url.read()
     except Exception, e:
         traceback.print_exc(file=sys.stdout)
         raise e

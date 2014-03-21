@@ -6,20 +6,30 @@ import os
 import ezbench
 import json
 import random
+t0 = time.time()
 import gzip
 import Queue
 import threading
+from os import listdir
+from os.path import isfile, join
+import getopt
 
 GRAPH_UPDATE_ID = "http://data.bioportal.org/benchmark/graph/go"
 
 class SparqlQueryBenchmark(object):
 
-    def __init__(self,client,log_queries,n_queries,n_threads):
+    def __init__(self,client,log_queries,n_queries,n_threads,data_folder,do_writes):
         self.client = client
         self.log_queries = log_queries
         self.n_queries = n_queries
         self.n_threads = n_threads
         self.load_query_log()
+        self.data_folder = data_folder
+        files = [ f for f in listdir(self.data_folder) if isfile(join(self.data_folder,f)) ]
+        files = map(lambda x: join(self.data_folder,x),
+                    filter(lambda x: x.endswith("nt.gzip"),files))
+        self.write_files = sorted(files,key=lambda x: os.stat(x).st_size,reverse=False)
+        self.write_files = self.write_files[0:1]
 
     def load_query_log(self):
         data = gzip.open(self.log_queries)
@@ -59,41 +69,64 @@ class SparqlQueryBenchmark(object):
         for t in threads:
             t.join()
 
+    def write_graphs(self):
+        return
+        while not self.queue.empty():
+            for f in self.write_files:
+                if not self.queue.empty():
+                    print "parsing ", f,
+                    sys.stdout.flush()
+                    ctype = "application/x-turtle" #"application/rdf+xml"
+                    with gzip.open(f) as data:
+                        triples = data.read()
+                        print "[file read]",
+                        sys.stdout.flush()
+                        t0 = time.time()
+                        self.client.append_triples(triples,GRAPH_UPDATE_ID,ctype)
+                        print "[done in %.2f sec]"%(time.time()-t0)
+                        sys.stdout.flush()
+                    data.close()
+                    print "deleting graph ...",
+                    sys.stdout.flush()
+                    t0 = time.time()
+                    self.client.delete_graph(GRAPH_UPDATE_ID)
+                    print "[done in %.2f sec]"%(time.time()-t0)
+                    sys.stdout.flush()
+
     def run(self):
+        write_thread = threading.Thread(target=self.write_graphs)
+        write_thread.start()
         self.run_queries()
+        write_thread.join()
     
-    def write(self):
-        f = "./data/NCITNCBO_ecxb.nt"
-        f = "./data/go_ecxb.nt"
-        #f = "./data/go.nt"
-        ctype = "application/x-turtle" #"application/rdf+xml"
-        with file(f,"r") as data:
-            triples = data.read()
-            self.client.append_triples(triples,graph,ctype)
-        #"""SELECT (count(?s) as ?c) WHERE { GRAPH <http://data.bioportal.org/benchmark/graph/go> { ?s a ?o }}"""
-        self.client.delete_graph(GRAPH_UPDATE_ID)
 
 if __name__ == '__main__':
-    epr = sys.argv[1]
-    log_sparql = sys.argv[2]
-    n_queries = 10000
-    n_threads = 8
-    if len(sys.argv) > 3:
-        n_queries = int(sys.argv[3])
-    if len(sys.argv) > 4:
-        n_threads = int(sys.argv[4])
+    optlist, args = getopt.getopt(sys.argv[1:], 'h:wt:n:d:l:')
+    optlist = dict(optlist)
+    epr = optlist["-h"]
+    log_sparql = optlist["-l"]
+    n_queries = int(optlist["-n"])
+    n_threads = int(optlist["-t"])
+    data_folder = "./data"
+    do_writes = "-w" in optlist
     print "Using SPARQL %s"%epr
     print "Using log file %s"%log_sparql
     print "#queries %d #threads %d"%(n_queries,n_threads)
+    print "Do writes ",do_writes
+    print "Cleaning previous writes ...",
+    sys.stdout.flush()
+    client = api.SPARQL(epr)
+    client.delete_graph(GRAPH_UPDATE_ID)
+    print "[Done]"
+    sys.stdout.flush()
 
     benchmark = ezbench.Benchmark()
-    #benchmark.link(api.SPARQL.delete_graph)
-    #benchmark.link(api.SPARQL.append_triples)
-    #benchmark.link(api.SPARQL.update)
     benchmark.link(api.SPARQL.query)
+    if do_writes:
+        benchmark.link(api.SPARQL.delete_graph)
+        benchmark.link(api.SPARQL.append_triples)
 
-    client = api.SPARQL(epr)
-    gw = SparqlQueryBenchmark(client,log_sparql,n_queries,n_threads)
+    gw = SparqlQueryBenchmark(client,log_sparql,n_queries,n_threads,data_folder,do_writes)
     gw.run()
     ezbench.report.show(benchmark)
     fout = os.path.join("results",
